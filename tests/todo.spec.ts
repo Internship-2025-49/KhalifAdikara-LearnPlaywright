@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('New Todo', () => {
 
   test.beforeEach(async ({page}) => {
-    await page.goto('https://demo.playwright.dev/todomvc/#/');
+    await page.goto('');
   })
 
   test('active and completed filters', async ({ page }) => {
