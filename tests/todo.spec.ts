@@ -1,8 +1,12 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('New Todo', () => {
-  test('active and completed filters', async ({ page }) => {
+
+  test.beforeEach(async ({page}) => {
     await page.goto('https://demo.playwright.dev/todomvc/#/');
+  })
+
+  test('active and completed filters', async ({ page }) => {
     await page.getByRole('textbox', { name: 'What needs to be done?' }).fill('water the plants.');
     await page.getByRole('textbox', { name: 'What needs to be done?' }).press('Enter');
     await page.getByRole('textbox', { name: 'What needs to be done?' }).fill('feed the dog.');
@@ -14,7 +18,6 @@ test.describe('New Todo', () => {
     await page.getByTestId('todo-title').click();
 
     test('text field is cleared when item is added', async ({ page}) => {
-      await page.goto('https://demo.playwright.dev/todomvc/#/')
       await page.getByPlaceholder('What needs to be done?').fill('water the plants');
       await page.getByPlaceholder('What needs to be done?').press('Enter');
       await expect(page.getByPlaceholder('What needs to be done?')).toBeEmpty();
