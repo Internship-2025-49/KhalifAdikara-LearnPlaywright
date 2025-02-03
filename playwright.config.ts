@@ -1,5 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
+import path from 'path';
 
+export const STORAGE_STATE = path.join(__dirname, 'playwright/.auth/user.json');
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -12,7 +14,7 @@ import { defineConfig, devices } from '@playwright/test';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  testDir: './tests',
+  testDir: '.',
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -24,11 +26,12 @@ export default defineConfig({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+  // globalSetup: require.resolve('./global-setup'),
+  // globalTeardown: require.resolve('./global-teardown'),
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     // baseURL: 'http://127.0.0.1:3000',
-    baseURL: 'https://demo.playwright.dev/todomvc/#/',
-
+    baseURL: 'https://en.wikipedia.org',
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on',
     screenshot: 'on',
@@ -37,24 +40,40 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: "setup",
+      testMatch: '**/*.setup.ts',
+      teardown: 'logout',
     },
-
     {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      name: 'logout',
+      testMatch: '**/*.teardown.ts',  
     },
-
     {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
+      name: 'Logged in',
+      dependencies: ['setup'],
+      use: {
+        storageState: STORAGE_STATE,
+      },
     },
+    // {
+    //   name: 'chromium',
+    //   use: { ...devices['Desktop Chrome'] },
+    // },
 
-    {
-      name: 'Mobile Safari',
-      use: { ...devices['iPhone 12 Pro'] },
-    },
+    // {
+    //   name: 'firefox',
+    //   use: { ...devices['Desktop Firefox'] },
+    // },
+
+    // {
+    //   name: 'webkit',
+    //   use: { ...devices['Desktop Safari'] },
+    // },
+
+    // {
+    //   name: 'Mobile Safari',
+    //   use: { ...devices['iPhone 12 Pro'] },
+    // },
 
     /* Test against mobile viewports. */
     // {
